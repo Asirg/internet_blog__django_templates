@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{% static 'dashboard/dashboard.css' %}">
+    </head>
+    <body>
+        <div class="posts_dashboard">
+            {% if post_list%}
+                {% for post in post_list %}
+                <div class="post_container">
+                    <div class="post_header">
+                        <a class="post_header_link" href="{% url 'dashboard:post' post.id %}">
+                            <p class="post_header_text">{{post.header}}</p>
+                        </a>
+                    </div>
+                    <div class="post_content">
+                        {{post.description}}
+                    </div>
+                    <div class="post_footer">
+                        <div class="post_footer_counter_container">
+                            <form action="{% url 'dashboard:reaction' post.id 0 1%}" method="post">
+                                {% csrf_token %}
+                                <input type="image" src='{% static "images/counters/like.png" %}' value="like" class="post_footer_counter_icon">
+                            </form>
+                            <p class="post_footer_counter_number">{{post.number_of_likes}}</p>
+                        </div>
+                        <div class="post_footer_counter_container">
+                            <form action="{% url 'dashboard:reaction' post.id 0 0%}" method="post">
+                                {% csrf_token %}
+                                <input type="image" src='{% static "images/counters/dislike.png" %}' value="like" class="post_footer_counter_icon">
+                            </form>
+                            <p class="post_footer_counter_number">{{post.number_of_dislikes}}</p>
+                        </div>
+                        <div class="post_footer_counter_container">
+                            <a href="{% url 'dashboard:post' post.id %}">
+                                <img class="post_footer_counter_icon" src='{% static "images/counters/comments.png" %}'>
+                            </a>
+                            <p class="post_footer_counter_number">{{post.number_of_comments}}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </body>
+</html>

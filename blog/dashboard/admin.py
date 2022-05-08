@@ -8,20 +8,14 @@ class PostTagInLine(admin.TabularInline):
 class CommentsInLine(admin.TabularInline):
     model = Comment
     extra = 0
-
-class ReactionInLine(admin.TabularInline):
-    model = Reaction
-    extra = 0
-
 class PostAdmin(admin.ModelAdmin):
     fields = [
-        'header', 'number_of_views', 'content' 
+        'header', 'number_of_views', 'content',
     ]
 
     inlines = [
         PostTagInLine, 
-        CommentsInLine, 
-        ReactionInLine
+        CommentsInLine
     ]
 
     list_filter = [
@@ -29,7 +23,7 @@ class PostAdmin(admin.ModelAdmin):
     ]
 
     list_display = [
-        'header', 'number_of_views', 'update_at', 'created_at'
+        'header', 'number_of_views', 'update_at', 'created_at',
     ]
 
     search_field = [
@@ -39,10 +33,6 @@ class PostAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     fields = [
         'post', 'parent_comment', 'text'
-    ]
-
-    inlines = [
-        ReactionInLine
     ]
 
     list_filter = [

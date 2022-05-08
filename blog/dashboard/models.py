@@ -8,24 +8,21 @@ class Post(models.Model):
     update_at = models.DateTimeField(auto_now=True, verbose_name="Update at")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
 
-    # def reactions(self) -> dict:
-    #     reactions = {
-    #         'like':0,
-    #         'dislike':0,
-    #     }
-    #     for react in self.reaction_set:
-    #         key = 'like' if react.value else 'dislike'
-    #         reactions[key] += 1
+    def description(self) -> str:
+        desc = self.content.get('description')
+        if desc:
+            return desc
+        else:
+            return self.content.get('text1')[:200]
+    
+    def number_of_likes(self) -> int:
+        return len(self.reaction_set.filter(value=True))
 
-    #     return reactions
+    def number_of_dislikes(self) -> int:
+        return len(self.reaction_set.filter(value=False))
 
-    # @admin.display(description='Like')
-    # def like(self) -> int:
-    #     return self.reactions()['like']
-
-    # @admin.display(description='Dislike')
-    # def dislike(self) -> int:
-    #     return self.reactions()['dislike']
+    def number_of_comments(self) ->int:
+        return len(self.comment_set.all())
 
     def __str__(self) -> str:
         return (
@@ -52,6 +49,11 @@ class Comment(models.Model):
             f"{self.post.header}:{self.text}"
         )
 
+    def number_of_likes(self) -> int:
+        return len(self.reaction_set.filter(value=True))
+
+    def number_of_dislikes(self) -> int:
+        return len(self.reaction_set.filter(value=False))
     class Meta:
         verbose_name = "Comment"
         verbose_name_plural = "Comments"
@@ -65,7 +67,6 @@ class Reaction(models.Model):
     )
     value = models.BooleanField(verbose_name="Like or dislike")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
-    author_ip = models.GenericIPAddressField(verbose_name="Author ip address")
 
     def __str__(self) -> str:
         source = self.post.header if not self.post.header is None else self.comment.text
