@@ -30,8 +30,7 @@ def ReactionView(request, post_id, comment_id, islike):
         path = 'dashboard:index'
     else:
         if islike > 1:
-            ...
-            # comment = get_list_or_404(Comment, pk=comment_id)
+            comment = get_object_or_404(Comment, pk=comment_id)
             islike -= 2
         else:
             post = get_object_or_404(Post, pk=post_id)

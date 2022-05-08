@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+{% load comment_tags %}
+{% load static %}
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{% static 'dashboard/post.css' %}">
+    </head>
+    <body>
+        <div class="posts_dashboard">
+            <!-- БЛОК ПОСТА -->
+            <div class="post">
+                <div class="post_header">
+                    <p class="post_header_text">{{post.header}}</p>
+                </div>
+                <div class="post_content">
+                    {{post.content}}
+                </div>
+                <div class="post_footer">
+                    <div class="post_footer_counter_container">
+                        <form action="{% url 'dashboard:reaction' post.id 0 1%}" method="post">
+                            {% csrf_token %}
+                            <input type="image" src='{% static "images/counters/like.png" %}' value="like" class="post_footer_counter_icon">
+                        </form>
+                        <p class="post_footer_counter_number">{{post.number_of_likes}}</p>
+                    </div>
+                    <div class="post_footer_counter_container">
+                        <form action="{% url 'dashboard:reaction' post.id 0 0%}" method="post">
+                            {% csrf_token %}
+                            <input type="image" src='{% static "images/counters/dislike.png" %}' value="like" class="post_footer_counter_icon">
+                        </form>
+                        <p class="post_footer_counter_number">{{post.number_of_dislikes}}</p>
+                    </div>
+                    <div class="post_footer_counter_container">
+                        <img class="post_footer_counter_icon" src='{% static "images/counters/comments.png" %}'>
+                        <p class="post_footer_counter_number">{{post.number_of_comments}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- БЛОК КОММЕНТАРИЕВ -->
+            <div class="comments">
+                <div class="post_header">
+                    <p class="post_header_text">Комментарии</p>
+                </div>
+                <div class="comments_content">
+                    <!-- ----------------------------------------------------------------------------------------- -->
+                    <form action="{% url 'dashboard:comment' post.id 0%}" method="post">
+                        {% csrf_token %}
+                        <input type="textarea" placeholder="Напишіть свій комментар" value="" name="input_text_comment" id="input_text_comment">
+                        <input type="submit" value="Відправати" id="input_submit_comment">
+                    </form>
+                    <!-- ----------------------------------------------------------------------------------------- -->
+                    <div class="comments_branch">
+                        {% for comment in post.comment_set.all %}
+                        <div class="comment_container">
+                            <div class="comment_container_header">
+                                <img class="comment_container_user_icon" src="{% static 'images/user.png' %}">
+                                <p class="comment_container_date_text">
+                                    {{comment.created_at|date:"Y-m-d H:i"}}
+                                </p>
+                            </div>
+                            <div class="comment_container_content">
+                                <p class="comment_container_text">
+                                    {{comment.text}}
+                                </p>
+                            </div>
+                            <div class="comment_container_footer">
+                                <div class="comment_container_footer_container">
+                                    <form action="{% url 'dashboard:reaction' post.id comment.id 3%}" method="post">
+                                        {% csrf_token %}
+                                        <input type="image" src='{% static "images/counters/like.png" %}' value="like" class="comment_container_footer_icon">
+                                    </form>
+                                    <p class="comment_container_footer_number">{{comment.number_of_likes}}</p>
+                                </div>
+                                <div class="comment_container_footer_container">
+                                    <form action="{% url 'dashboard:reaction' post.id comment.id 2%}" method="post">
+                                        {% csrf_token %}
+                                        <input type="image" src='{% static "images/counters/dislike.png" %}' value="like" class="comment_container_footer_icon">
+                                    </form>
+                                    <p class="comment_container_footer_number">{{comment.number_of_dislikes}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    <!-- <div class="comments_branch">
+                    </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
