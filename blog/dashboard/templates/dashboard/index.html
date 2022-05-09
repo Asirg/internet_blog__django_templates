@@ -5,6 +5,29 @@
         <link rel="stylesheet" type="text/css" href="{% static 'dashboard/dashboard.css' %}">
     </head>
     <body>
+        <div class="navigation_bar">
+            <div class="navigation_sort">
+                <form action="" method="get">
+                    <input type="submit" value="Дата публікації за спаданням" class="navigation_sort_input" name="sort">
+                    <input type="submit" value="Дата публікації за зростанням" class="navigation_sort_input" name="sort">
+                    <input type="text" value="{{search_value}}" placeholder="Пошук" class="navigation_search_input" name="search">
+                    <input type="submit" value="пошук" class="navigation_sort_input">
+                    <fieldset class="tags_container">
+                        <legend>Оберіть теги:</legend>
+                        {% for tag in tags_list%}
+                        <div>
+                          {% if tag.checked == True %}
+                          <input type="checkbox" id="{{tag.value}}" name="{{tag.value}}" checked>
+                          {% else %}
+                          <input type="checkbox" id="{{tag.value}}" name="{{tag.value}}">
+                          {% endif %}
+                          <label for="{{tag.value}}">{{tag.value}}</label>
+                        </div>
+                        {% endfor %}
+                    </fieldset>
+                </form>
+            </div>
+        </div>
         <div class="posts_dashboard">
             {% if post_list%}
                 {% for post in post_list %}

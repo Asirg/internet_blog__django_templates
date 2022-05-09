@@ -1,6 +1,9 @@
+from email import header
 from re import template
+from time import process_time_ns
 from urllib import request
 from django.shortcuts import render, get_object_or_404, get_list_or_404
+from django.test import tag
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404, QueryDict
 from django.views import generic
@@ -8,21 +11,56 @@ from dashboard.models import (
     Post, Comment, PostTag, Reaction, Tag
 )
 
+from typing import Any, Dict
+
 class IndexView(generic.ListView):
-    template_name= "dashboard/index.html"
+    # model = Post
+    template_name = "dashboard/index.html"
     context_object_name = "post_list"
 
-    def get_queryset(self) -> list:
-        return Post.objects.all()
+    tags_filter = []
 
-class PostView(generic.DeleteView):
+    def get_queryset(self) -> list:
+        posts = Post.objects.all()
+
+        search = self.request.GET.get('search')
+        if search:
+            posts = posts.filter(header__contains=search)
+
+        sort = self.request.GET.get('sort')
+        if sort == "Дата публікації за зростанням":
+            posts = posts.order_by('-created_at')
+        else:
+            posts = posts.order_by('created_at')
+
+        self.tags_filter = [ tag for tag in self.request.GET.keys() if tag in Tag.get_all_tags()]
+        if self.tags_filter != []:
+            result_posts = []
+            for post in posts:
+                if not set(post.tags()).isdisjoint(set(self.tags_filter)):
+                    result_posts.append(post)
+        else:
+            result_posts = posts
+
+        return result_posts
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+    
+        context['search_value'] = self.request.GET.get('search', "")
+        context['tags_list'] = [
+            {'checked': tag in self.tags_filter, 'value': tag}
+            for tag in Tag.get_all_tags()
+        ]
+
+        return context
+
+class PostView(generic.DetailView):
     template_name = "dashboard/post.html"
     model = Post
 
 def ReactionView(request, post_id, comment_id, islike):
     post = comment = args = None
-
-    print("*"*100)
 
     # Проверка на страницу где выставляеться реакция
     if request.META['HTTP_REFERER'].split('dashboard/')[1] == "":

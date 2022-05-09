@@ -3,7 +3,29 @@ body {
     margin: 0;
     display: flex;
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
+
+.navigation_bar{
+    display: flex;
+    background-color: #a0bff3;
+    width: 80vw;
+    padding-left:70px;
+    padding-top: 20px;
+    height: 100px;
+}
+
+.tags_container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.tags{
+    margin: 10px;
+}
+
 .posts_dashboard {
     background: rgba(0, 0, 0, 0);
     display: flex;

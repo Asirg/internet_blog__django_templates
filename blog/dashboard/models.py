@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib import admin
 
+from typing import List
+
 class Post(models.Model):
     header = models.CharField(max_length=200, verbose_name="Post header")
     content = models.JSONField(verbose_name="Post content")
@@ -23,6 +25,11 @@ class Post(models.Model):
 
     def number_of_comments(self) ->int:
         return len(self.comment_set.all())
+
+    def tags(self) -> List[str]:
+        tags = self.posttag_set.all()
+        tags = [tag.tag_key.value for tag in tags]
+        return tags
 
     def __str__(self) -> str:
         return (
@@ -84,6 +91,10 @@ class Tag(models.Model):
 
     def __str__(self) -> str:
         return self.value
+
+    @staticmethod
+    def get_all_tags():
+        return [tag.value for tag in Tag.objects.all()]
 
     class Meta:
         verbose_name = "Tag"

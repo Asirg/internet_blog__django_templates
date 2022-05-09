@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-{% load comment_tags %}
 {% load static %}
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="{% static 'dashboard/post.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dashboard/post copy.css' %}">
     </head>
     <body>
+        <div class="navigation_bar">
+            <a href="{% url 'dashboard:index' %}"><div class="back">Повернутися назад</div></a>
+        </div>
         <div class="posts_dashboard">
             <!-- БЛОК ПОСТА -->
             <div class="post">
